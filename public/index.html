@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mi Proyecto Sprint 1</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 1rem; }
+    form { display: grid; gap: .5rem; margin: 1rem 0; }
+    input, button { padding: .5rem; font-size: 1rem; }
+    .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+    #msg { color: #b00; }
+    nav button { margin-right: .5rem; }
+  </style>
+</head>
+<body>
+  <h1>Mi Proyecto Sprint 1</h1>
+
+  <div class="card">
+    <h2>Sesión</h2>
+    <p id="session-info">No autenticado</p>
+    <button id="btn-logout">Cerrar sesión</button>
+    <button id="btn-me">Comprobar sesión</button>
+  </div>
+
+  <div class="card">
+    <h2>Registro</h2>
+    <form id="form-register">
+      <input name="name" placeholder="Nombre" required />
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Contraseña" required minlength="6" />
+      <button type="submit">Registrarme</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Iniciar sesión</h2>
+    <form id="form-login">
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="password" type="password" placeholder="Contraseña" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <a href="/api/auth/google"><button>Entrar con Google</button></a>
+  </div>
+
+  <div class="card">
+    <h2>Admin — Usuarios</h2>
+    <button id="btn-users">Listar usuarios</button>
+    <ul id="users-list"></ul>
+  </div>
+
+  <p id="msg"></p>
+
+  <script src="/ui.js" type="module"></script>
+</body>
+</html>
