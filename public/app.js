@@ -1,8 +1,15 @@
+// public/app.js
 // Capa de comunicación con el servidor (cliente API).
 export const api = {
   get: (url) => fetch(url, { credentials: 'include' }).then(handle),
   post: (url, body) => fetch(url, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(body),
+  }).then(handle),
+  patch: (url, body = {}) => fetch(url, {
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify(body),
