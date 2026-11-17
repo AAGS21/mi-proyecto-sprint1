@@ -1,3 +1,4 @@
+// src/server.js
 import express from 'express';
 import session from 'express-session';
 import connectSqlite3 from 'connect-sqlite3';
@@ -7,8 +8,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { setupPassport } from './logic/passport.js';
 import * as repo from './data/userRepo.js';
+import * as ticketRepo from './data/ticketRepo.js';
 import authRoutes from './api/authRoutes.js';
 import userRoutes from './api/userRoutes.js';
+import ticketRoutes from './api/ticketRoutes.js';
 
 dotenv.config();
 
@@ -50,6 +53,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
@@ -62,6 +66,7 @@ app.use((err, _req, res, _next) => {
 const PORT = process.env.PORT || 3000;
 
 await repo.init();
+await ticketRepo.init();
 
 // Crear admin inicial si no existe
 if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {

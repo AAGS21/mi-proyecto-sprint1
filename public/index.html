@@ -2,53 +2,257 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Mi Proyecto Sprint 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HelpDesk SaaS — Gestión de Tickets IT</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 1rem; }
-    form { display: grid; gap: .5rem; margin: 1rem 0; }
-    input, button { padding: .5rem; font-size: 1rem; }
-    .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-    #msg { color: #b00; }
-    nav button { margin-right: .5rem; }
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #d97706;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+    /* Barra superior */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .session-bar { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .badge {
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-guest { background: #e2e8f0; color: #475569; }
+    .badge-user { background: #dbeafe; color: #1e40af; }
+    .badge-admin { background: #fef3c7; color: #92400e; }
+    .badge-alta { background: #fee2e2; color: #991b1b; }
+    .badge-media { background: #fef3c7; color: #92400e; }
+    .badge-baja { background: #e0f2fe; color: #075985; }
+    .badge-abierto { background: #dcfce7; color: #166534; }
+    .badge-resuelto { background: #f1f5f9; color: #64748b; text-decoration: line-through; }
+
+    /* Contenedor principal */
+    main { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+    .hidden { display: none !important; }
+
+    /* Tarjetas y pestañas */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      margin-bottom: 1.25rem;
+    }
+    .auth-box { max-width: 440px; margin: 3rem auto; }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    /* Formularios y botones */
+    form { display: grid; gap: 0.75rem; margin: 0.5rem 0 1rem; }
+    input, select, button {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    input:focus, select:focus {
+      outline: 2px solid #bfdbfe;
+      border-color: var(--primary);
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.05s;
+    }
+    button:hover { background: var(--primary-hover); }
+    button:active { transform: scale(0.98); }
+    .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-success { background: var(--success); }
+    .btn-success:hover { background: #15803d; }
+    .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.82rem; }
+    .divider { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 0.75rem 0; }
+
+    /* Listas de elementos */
+    ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.65rem; }
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fafcff;
+      flex-wrap: wrap;
+    }
+    .item-actions { display: flex; gap: 0.4rem; align-items: center; }
+
+    /* Notificación Toast (Feedback visual) */
+    #toast {
+      position: fixed;
+      top: 4.5rem;
+      right: 1.5rem;
+      min-width: 280px;
+      max-width: 420px;
+      padding: 0.9rem 1.15rem;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 100;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .toast-success { background: var(--success); }
+    .toast-error { background: var(--danger); }
+    .toast-info { background: #0f172a; }
   </style>
 </head>
 <body>
-  <h1>Mi Proyecto Sprint 1</h1>
 
-  <div class="card">
-    <h2>Sesión</h2>
-    <p id="session-info">No autenticado</p>
-    <button id="btn-logout">Cerrar sesión</button>
-    <button id="btn-me">Comprobar sesión</button>
-  </div>
+  <!-- Barra de estado siempre visible -->
+  <header>
+    <div class="brand">🛠️ HelpDesk IT — SaaS</div>
+    <div class="session-bar">
+      <span id="session-info" class="badge badge-guest">No autenticado</span>
+      <button id="btn-me" class="btn-secondary btn-sm">Comprobar sesión</button>
+      <button id="btn-delete-self" class="btn-danger btn-sm hidden">Eliminar mi cuenta</button>
+      <button id="btn-logout" class="btn-secondary btn-sm hidden">Cerrar sesión</button>
+    </div>
+  </header>
 
-  <div class="card">
-    <h2>Registro</h2>
-    <form id="form-register">
-      <input name="name" placeholder="Nombre" required />
-      <input name="email" type="email" placeholder="Email" required />
-      <input name="password" type="password" placeholder="Contraseña" required minlength="6" />
-      <button type="submit">Registrarme</button>
-    </form>
-  </div>
+  <!-- Toast de feedback visual -->
+  <div id="toast" class="hidden"></div>
 
-  <div class="card">
-    <h2>Iniciar sesión</h2>
-    <form id="form-login">
-      <input name="email" type="email" placeholder="Email" required />
-      <input name="password" type="password" placeholder="Contraseña" required />
-      <button type="submit">Entrar</button>
-    </form>
-    <a href="/api/auth/google"><button>Entrar con Google</button></a>
-  </div>
+  <main>
+    <!-- PANTALLA 1: INVITADO (Login / Registro por pestañas) -->
+    <section id="view-guest" class="card auth-box">
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-auth-tab="login">Iniciar sesión</button>
+        <button type="button" class="tab-btn" data-auth-tab="register">Crear cuenta</button>
+      </div>
 
-  <div class="card">
-    <h2>Admin — Usuarios</h2>
-    <button id="btn-users">Listar usuarios</button>
-    <ul id="users-list"></ul>
-  </div>
+      <!-- Tab Login -->
+      <div id="panel-login">
+        <h2>Bienvenido de nuevo</h2>
+        <form id="form-login">
+          <input name="email" type="email" placeholder="Correo electrónico" required />
+          <input name="password" type="password" placeholder="Contraseña" required />
+          <button type="submit">Entrar al panel</button>
+        </form>
+        <div class="divider">— o accede con proveedor externo —</div>
+        <a href="/api/auth/google" style="text-decoration:none; display:block;">
+          <button type="button" class="btn-secondary" style="width:100%;">🌐 Entrar con Google (OAuth 2.0)</button>
+        </a>
+      </div>
 
-  <p id="msg"></p>
+      <!-- Tab Registro -->
+      <div id="panel-register" class="hidden">
+        <h2>Registro de nuevo usuario</h2>
+        <form id="form-register">
+          <input name="name" placeholder="Nombre completo" required />
+          <input name="email" type="email" placeholder="Correo electrónico" required />
+          <input name="password" type="password" placeholder="Contraseña (mín. 6 caracteres)" required minlength="6" />
+          <button type="submit">Registrarme</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: APLICACIÓN (Visible al iniciar sesión) -->
+    <section id="view-app" class="hidden">
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-app-tab="tickets">🎫 Soporte IT — Tickets</button>
+        <button type="button" class="tab-btn" data-app-tab="admin">👥 Administración de Usuarios</button>
+      </div>
+
+      <!-- Subvista: Tickets IT -->
+      <div id="panel-tickets">
+        <div class="card">
+          <h2>Nueva incidencia de soporte</h2>
+          <form id="form-ticket">
+            <input name="title" placeholder="Título de la incidencia (ej. Fallo en VPN)" required />
+            <input name="description" placeholder="Descripción detallada del problema" />
+            <select name="priority">
+              <option value="baja">Prioridad Baja</option>
+              <option value="media" selected>Prioridad Media</option>
+              <option value="alta">Prioridad Alta</option>
+            </select>
+            <button type="submit">Crear Ticket</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="margin:0;">Listado de Tickets</h2>
+            <button id="btn-tickets" class="btn-secondary btn-sm">🔄 Actualizar</button>
+          </div>
+          <ul id="tickets-list"></ul>
+        </div>
+      </div>
+
+      <!-- Subvista: Administración de Usuarios -->
+      <div id="panel-admin" class="card hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2 style="margin:0;">Gestión de Usuarios (Rol Admin)</h2>
+            <p style="color:var(--muted); font-size:0.88rem; margin:0.25rem 0 0;">
+              El control de acceso se valida en el servidor: si eres usuario normal, la API rechazará la acción con 403.
+            </p>
+          </div>
+          <button id="btn-users" class="btn-sm">Listar usuarios</button>
+        </div>
+        <ul id="users-list"></ul>
+      </div>
+    </section>
+  </main>
 
   <script src="/ui.js" type="module"></script>
 </body>
