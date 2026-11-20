@@ -84,3 +84,7 @@ npm run dev
 - El administrador inicial se crea al arrancar usando `ADMIN_EMAIL` y
   `ADMIN_PASSWORD`. Las credenciales de prueba se envían con la entrega, no
   se publican en el repositorio.
+  
+  ## Contacto
+
+Repositorio individual del Sprint 1.
